@@ -6,17 +6,23 @@ public class DeathZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Проверяем, что телепортируем именно игрока
+        //Именно игрок
         if (other.CompareTag("Player") || other.GetComponent<PlayerMovement>() != null || other.name == "Player")
         {
-            // Сбрасываем накопившуюся скорость падения, чтобы игрок не летал и не падал сквозь пол
+            // 1. Отнимаем 1 сердечко в HUDManager
+            if (HUDManager.Instance != null)
+            {
+                HUDManager.Instance.TakeDamage(1);
+            }
+
+            // 2. Сбрасываем накопившуюся скорость падения, чтобы игрок не летал и не падал сквозь пол
             if (other.TryGetComponent<Rigidbody>(out var rb))
             {
                 rb.linearVelocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
             }
 
-            // Телепортируем на спавн
+            // 3. Телепортируем на спавн
             other.transform.position = respawnPoint;
         }
     }
